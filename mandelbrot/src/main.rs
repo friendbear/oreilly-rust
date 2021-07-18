@@ -1,11 +1,11 @@
 extern crate num;
-extern crete image:
+extern crate image;
 use num::Complex;
 use std::{str, usize};
 use std::{str::FromStr, u8};
-use image::ColorType;
-use image::png::PnGEncoder;
-use std:: fs::File;
+use image::{ColorType, ImageError};
+use image::png::PngEncoder;
+use std::fs::File;
 
 
 #[allow(dead_code)]
@@ -106,15 +106,14 @@ fn render(pixels: &mut [u8], bounds: (usize, usize), upper_left: Complex<f64>, l
 
 
 // 大きさが `bounds` で指定されたバッファ `blxels` を `filename` で指定されたファイルに書き出す
-fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize)) -> Result<(), std::io::Error>> {
+fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize)) -> Result<(), ImageError> {
 
-    let output = File.create(filename)?;
+    let output = File::open(filename)?;
 
-    let encoder = PNGEncoder::new(output);
+    let encoder = PngEncoder::new(output);
     encoder.encode(&pixels,
         bounds.0 as u32, bounds.1 as u32,
-        ColorType::Gray(8))?; // 8bit Gray scale
-    
+        ColorType::Bgr8)?;
     Ok(())
 }
 fn main() {
