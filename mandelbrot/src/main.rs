@@ -6,7 +6,7 @@ use std::{str::FromStr, u8};
 use image::{ColorType, ImageError};
 use image::png::PngEncoder;
 use std::fs::File;
-
+use::std::io::Write;
 
 #[allow(dead_code)]
 fn complex_square_add_loop(c: Complex<f64>) {
@@ -117,5 +117,15 @@ fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize)) -> Result<
     Ok(())
 }
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = std::env::args().collect();
+
+    if args.len() !=5 {
+        writeln!(std::io::stderr(), "
+            Usage: mandelbrot Filename PIXELS UPPERLEFT LOWERRIGHT
+
+                Example: {} mandel.png 1000x750 -1.20,0.35 -1,0.20
+            ", args[0]
+        ).unwrap();
+        std::process::exit(1)
+    }
 }
