@@ -1,6 +1,12 @@
 extern crate num;
+extern crete image:
 use num::Complex;
+use std::{str, usize};
 use std::{str::FromStr, u8};
+use image::ColorType;
+use image::png::PnGEncoder;
+use std:: fs::File;
+
 
 #[allow(dead_code)]
 fn complex_square_add_loop(c: Complex<f64>) {
@@ -96,6 +102,20 @@ fn render(pixels: &mut [u8], bounds: (usize, usize), upper_left: Complex<f64>, l
                 
         }
     }
+}
+
+
+// 大きさが `bounds` で指定されたバッファ `blxels` を `filename` で指定されたファイルに書き出す
+fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize)) -> Result<(), std::io::Error>> {
+
+    let output = File.create(filename)?;
+
+    let encoder = PNGEncoder::new(output);
+    encoder.encode(&pixels,
+        bounds.0 as u32, bounds.1 as u32,
+        ColorType::Gray(8))?; // 8bit Gray scale
+    
+    Ok(())
 }
 fn main() {
     println!("Hello, world!");
