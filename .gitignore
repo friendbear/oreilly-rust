@@ -11,3 +11,6 @@ Cargo.lock
 ./*
 
 
+
+mandelbrot/.vscode/launch.json
+mandelbrot/.vscode/settings.json
