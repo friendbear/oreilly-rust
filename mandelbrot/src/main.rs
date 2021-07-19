@@ -91,10 +91,10 @@ fn test_pixel_to_point() {
 fn render(pixels: &mut [u8], bounds: (usize, usize), upper_left: Complex<f64>, lower_right: Complex<f64>) {
     assert!(pixels.len() == bounds.0 * bounds.1);
 
-    for row in 0 ..bounds.0 {
-        for column in 0 ..bounds.1 {
+    for row in 0 ..bounds.1 {
+        for column in 0 ..bounds.0 {
             let point = pixel_to_point(bounds, (column, row), upper_left, lower_right);
-            pixels[row * bounds.0 +column] = 
+            pixels[row * bounds.0 + column] = 
                 match escape_time(point, 255) {
                     None => 0,
                     Some(count) => 255 - count as u8
@@ -108,12 +108,12 @@ fn render(pixels: &mut [u8], bounds: (usize, usize), upper_left: Complex<f64>, l
 // 大きさが `bounds` で指定されたバッファ `blxels` を `filename` で指定されたファイルに書き出す
 fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize)) -> Result<(), ImageError> {
 
-    let output = File::open(filename)?;
+    let output = File::create(filename)?;
 
     let encoder = PngEncoder::new(output);
     encoder.encode(&pixels,
         bounds.0 as u32, bounds.1 as u32,
-        ColorType::Bgr8)?;
+        ColorType::L8)?;
     Ok(())
 }
 fn main() {
@@ -128,4 +128,40 @@ fn main() {
         ).unwrap();
         std::process::exit(1)
     }
+
+    let bounds = parse_pair(&args[2], 'x')
+        .expect("error parsing image dimensions");
+    let upper_left = parse_complex(&args[3])
+        .expect("error parsing upper left corner point");
+    let lower_light = parse_complex(&args[4])
+        .expect("error parsing lower right corner point");
+
+    let mut pixels = vec![0; bounds.0 * bounds.1];
+
+    let threads = 8 ;
+    let rows_per_band = bounds.1 / threads + 1;
+    {
+        let bands: Vec<&mut [u8]> = pixels.chunks_mut(rows_per_band * bounds.0).collect();
+        crossbeam::scope(|spawner| {
+            for (i, band) in bands.into_iter().enumerate() {
+                let top = rows_per_band * i;
+                let height = band.len() / bounds.0;
+                let band_bounds = (bounds.0, height);
+                let band_upper_left = 
+                    pixel_to_point(bounds, (0, top),
+                        upper_left, lower_light);
+                let band_lower_right =
+                    pixel_to_point(bounds, (bounds.0, top + height),
+                        upper_left, lower_light);
+
+                spawner.spawn(move || {
+                    render(band, band_bounds, band_upper_left, band_lower_right);
+                });
+            }
+        })
+    }
+
+    write_image(&args[1], &pixels, bounds)
+        .expect("error writing PNG file");
+
 }

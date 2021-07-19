@@ -8,3 +8,5 @@ authors = ["T Kumagai <s8zmnonun@relay.firefox.com>"]
 [dependencies]
 num = "0.4.0"
 image = "0.23.14"
+# スコープ付きスレッド
+crossbeam = "0.2.12"
