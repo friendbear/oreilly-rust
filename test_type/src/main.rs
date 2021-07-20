@@ -71,6 +71,7 @@ fn test_array() {
       }
     }
   }
+  // @todo
   // assert!(sieve[211]);  // thread 'test_array' panicked at 'assertion failed: sieve[211]', src/main.rs:74:3
   assert!(!sieve[9876]);
 
