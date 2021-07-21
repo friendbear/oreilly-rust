@@ -8,6 +8,16 @@ fn main() {
   let t = (12, "eggs");
   let b = Box::new(t);
 
+  // Get our command-line arguments as a vector of Strings.__rust_force_expr!
+  let languages: Vec<String> = std::env::args().skip(1).collect();
+  for l in languages {
+    println!("{}: {}", l,
+      if l.len() % 2 == 0 {
+        "functional"
+      } else {
+        "imperative"
+      });
+    }
 }
 #[test]
 fn test_type() {
@@ -103,4 +113,64 @@ fn test_vec() {
   let v3: Vec<i32> = (0..5).collect();
   assert_eq!(v3, [0, 1, 2, 3, 4]);
 
+  // `Vec::with_capacity`
+  let mut v4 = Vec::with_capacity(2);
+  assert_eq!(v4.len(), 0);
+  assert_eq!(v4.capacity(), 2);
+
+  v4.push(1);
+  v4.push(2);
+  assert_eq!(v4.len(), 2);
+  assert_eq!(v4.capacity(), 2);
+
+  v4.push(3);
+  assert_eq!(v4.len(), 3);
+  assert_eq!(v4.capacity(), 4);
+
+  let mut v5 = vec![10, 20, 30, 40, 50];
+  v5.insert(3, 35);
+  assert_eq!(v5, [10, 20, 30, 35, 40, 50]);
+
+  v5.remove(1);
+  assert_eq!(v5, [10, 30, 35, 40, 50]);
+
+  // `pop`
+  let mut v6 = vec!["caren", "miranda"];
+  assert_eq!(v6.pop(), Some("miranda"));
+  assert_eq!(v6.pop(), Some("caren"));
+  assert_eq!(v6.pop(), None);
+}
+
+#[test]
+fn test_str() {
+
+  let speech = "\"Ouch!\" said the well.\n";
+  assert_eq!(speech.trim_end(), r###""Ouch!" said the well."###);
+
+  let default_win_install_path = r"c:\Program Files\Gorillas";
+
+  let method = b"GET";
+  assert_eq!(method, &[b'G', b'E', b'T']); // &[u8: 3] 3byte Array
+
+  let moodles = "moodless".to_string(); // Convert &str => String
+  let oodles = &moodles[1..];
+  let poodles = "💚_💚";
+  assert_eq!(poodles.len(), 9);
+  assert_eq!(poodles.chars().count(), 3);
+
+  assert_eq!(format!("{} {:02} {:02} N", 24, 5, 23),
+    "24 05 23 N".to_string());
+
+  let bits = vec!["veni", "vidi", "vici"];
+  assert_eq!(bits.concat(), "venividivici");
+  assert_eq!(bits.join(", "), "veni, vidi, vici");
+
+  assert!("ONE".to_lowercase() == "one");
+
+  assert!("peanut".contains("nut"));
+  assert_eq!("💚_💚".replace("💚", "❌"), "❌_❌");
+
+  for word in "veni, vidi, vici".split(", ") {
+    assert!(word.starts_with("v"));
+  }
 }
