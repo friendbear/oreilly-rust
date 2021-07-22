@@ -15,3 +15,4 @@ Projects
 #. mandalbrot
 #. test_type
 
+#. property_right
