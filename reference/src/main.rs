@@ -3,7 +3,7 @@ use ::std::collections::HashMap;
 // Not Copy type
 type Table = HashMap<String, Vec<String>>;
 
-fn show(table: Table) {
+fn show(table: &Table) {
     // <== Move table
     for (artist, works) in table {
         println!("works by {}:", artist);
@@ -17,7 +17,7 @@ fn main() {
     table.insert(
         "Gesualdo".to_string(),
         vec![
-            "memy madrigais".to_string(),
+            "many madrigals".to_string(),
             "Tenebrae Responsoria".to_string(),
         ],
     );
@@ -36,9 +36,9 @@ fn main() {
         ],
     );
 
-    show(table);
+    // show(table);
 
-    //❌ assert_eq!(table["Cesualdo"][0], "many madrigals");
+    //❌ assert_eq!(table["Gesuald"][0], "many madrigals");
     //     error[E0382]: borrow of moved value: `table`
     //   --> src/main.rs:29:16
     //    |
@@ -50,4 +50,8 @@ fn main() {
     // 28 |
     // 29 |     assert_eq!(table["Cesualdo"][0], "many madrigals");
     //    |                ^^^^^ value borrowed here after move
+
+    // change pass by reference
+    show(&table);
+    assert_eq!(table["Gesualdo"][0], "many madrigals");
 }
