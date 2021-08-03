@@ -39,7 +39,7 @@ fn test_ref_ref() {
 }
 
 #[test]
-fn test_ref_comp() {
+fn test_ref_cmp() {
     let x = 10;
     let y = 10;
 
@@ -51,4 +51,31 @@ fn test_ref_comp() {
 
     assert!(rrx <= rry);
     assert!(rrx == rry);
+
+    assert!(!std::ptr::eq(rx, ry));
+}
+
+#[test]
+fn test_ref_fn() {
+    fn factrial(n: usize) -> usize {
+        (1..n +1).fold(1, |a, b| a * b)
+    }
+
+    let r = &factrial(6);
+
+    assert_eq!(r + &1009, 1729);
+}
+
+#[test]
+fn test_ref_rtn() {
+    fn smallest(v: &[i32]) -> &i32 {
+        let mut s = &v[0];
+        for r in &v[1..] {
+            if *r < *s { s = r}
+        }
+        s
+    }
+    let parabola = [9, 4, 1, 0, 1, 4, 9];
+    let s = smallest(&parabola);
+    assert_eq!(*s, 0);
 }
