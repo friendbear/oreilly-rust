@@ -12,6 +12,17 @@ fn show(table: &Table) {
         }
     }
 }
+
+struct File {
+    descriptor: i32
+}
+fn new_file(d: i32) -> File {
+    File { descriptor: d }
+}
+fn clone_from(this: &mut File, rhs: &File) {
+    //close(this.descriptor);
+    //this.descriptor = nix::unistd::dup(rhs.descriptor);
+}
 fn main() {
     let mut table = Table::new();
     table.insert(
@@ -54,4 +65,16 @@ fn main() {
     // change pass by reference
     show(&table);
     assert_eq!(table["Gesualdo"][0], "many madrigals");
+}
+
+#[test]
+fn test_ref_share() {
+    let mut wave: Vec<f32> = Vec::new();
+    let head = vec![0.0, 1.0];
+    let tail = vec![0.0, -1.0];
+
+    wave.extend(&head);
+    wave.extend(&tail);
+
+    assert_eq!(wave, vec![0.0, 1.0, 0.0, -1.0]);
 }
